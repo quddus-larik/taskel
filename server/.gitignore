@@ -1,0 +1,34 @@
+# Node.js dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Environment variables
+.env
+.env.development
+.env.production
+.env.test
+.env.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Build artifacts
+dist/
+build/
+
+# IDE and OS generated files
+.DS_Store
+.vscode/
+.idea/
+Thumbs.db
+
+# Test coverage
+coverage/
+
+# Uploads or temporary files
+uploads/
+tmp/
