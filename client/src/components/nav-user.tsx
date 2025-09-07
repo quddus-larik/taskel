@@ -99,10 +99,6 @@ export function NavUser({
                 <Bell />
                 Notifications
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <ModeToggle/>
-                Theme
-              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
