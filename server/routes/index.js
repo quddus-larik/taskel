@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.use(authRoutes);
 router.use("/api",userRoutes);
-router.use("/teams", teamRoutes);
-router.use("/tasks", taskRoutes);
+router.use("/api/teams", teamRoutes);
+router.use("/api/tasks", taskRoutes);
 
 module.exports = router;
