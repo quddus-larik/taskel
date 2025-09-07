@@ -1,8 +1,6 @@
-"use client"
-
 import * as React from "react"
 import { ChevronsUpDown, Plus } from "lucide-react"
-
+import { useNavigate } from "react-router"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +26,7 @@ export function TeamSwitcher({
     plan: string
   }[]
 }) {
+  const navigate = useNavigate();
   const { isMobile } = useSidebar()
   const [activeTeam, setActiveTeam] = React.useState(teams[0])
 
@@ -77,7 +76,7 @@ export function TeamSwitcher({
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
+            <DropdownMenuItem className="gap-2 p-2" onClick={() => navigate("/add-team")}>
               <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
                 <Plus className="size-4" />
               </div>
