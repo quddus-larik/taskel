@@ -35,6 +35,24 @@ router.get("/", checkAuthenticated, async (req, res) => {
   }
 });
 
+router.get("/:id/details", checkAuthenticated, async (req, res) => {
+  try {
+    const teamId = req.params.id;
+    const team = await Team.getTeamDetails(teamId);
+
+    if (!team) {
+      return res.status(404).json({ message: "Team not found" });
+    }
+
+    res.json(team);
+  } catch (err) {
+    console.error("❌ Error in /:id/details:", err.message);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
 // Create team
 router.post("/", checkAuthenticated, async (req, res) => {
   try {
