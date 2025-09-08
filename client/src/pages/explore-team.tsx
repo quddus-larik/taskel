@@ -127,7 +127,7 @@ function ExploreTeamPage() {
 
 
     const memberOptions = members.map((m) => ({
-      value: m.id.toString(),
+      value: m.id,
       label: m.email,
     }));
 
