@@ -48,20 +48,26 @@ async function initTables() {
 
   // Tasks
   await pool.query(`
-    CREATE TABLE IF NOT EXISTS tasks (
-    id SERIAL PRIMARY KEY,
-    team_id INT NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
-    assigned_to INT REFERENCES users(id) ON DELETE SET NULL, -- task assignee
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    status VARCHAR(50) DEFAULT 'pending', -- e.g., pending, in-progress, done
-    priority VARCHAR(50) DEFAULT 'normal', -- e.g., low, normal, high
-    due_date TIMESTAMP,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
+  CREATE TABLE IF NOT EXISTS tasks (
+  id SERIAL PRIMARY KEY,
+  team_id INT NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  status VARCHAR(50) DEFAULT 'pending', -- pending, in-progress, done
+  priority VARCHAR(50) DEFAULT 'normal', -- low, normal, high
+  due_date TIMESTAMP,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
 );
+`);
 
-  `);
+  await pool.query(`
+CREATE TABLE IF NOT EXISTS task_assignees (
+  task_id INT NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+  user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  PRIMARY KEY (task_id, user_id)
+);`)
+
 
   console.log('✅ Database initialized');
 }
