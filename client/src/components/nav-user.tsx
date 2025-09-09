@@ -27,7 +27,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { ModeToggle } from "./mode-toggle"
+import axios from "axios";
+import { useNavigate } from "react-router";
+
 
 export function NavUser({
   user,
@@ -39,7 +41,21 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const navigate = useNavigate();
 
+  const handleLogout = async () => {
+    try {
+      const res = await axios.delete("http://localhost:4000/logout", {
+        withCredentials: true, // important to send cookies
+      });
+      console.log(res.data.message); // "Logged out"
+
+      navigate("/login");
+    } catch (err: any) {
+      console.error("Logout failed", err);
+      alert(err.response?.data?.error || "Error logging out");
+    }
+  };
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -101,7 +117,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>
