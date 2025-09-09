@@ -10,5 +10,6 @@ router.use(authRoutes);
 router.use("/api",userRoutes);
 router.use("/api/teams", teamRoutes);
 router.use("/api/tasks", taskRoutes);
+router.use("/api/smpt/invite", taskRoutes);
 
 module.exports = router;

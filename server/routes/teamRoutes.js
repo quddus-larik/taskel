@@ -269,9 +269,16 @@ router.put("/:teamId/tasks/:taskId/complete", checkAuthenticated, async (req, re
 
 router.get("/stats/:id", checkAuthenticated, async (req, res) => {
   try {
-    const userId = parseInt(req.params.id, 10);
+    const teamId = parseInt(req.params.id, 10);
 
-    const stats = await pool.query(
+    // 1️⃣ Check if team exists
+    const teamRes = await pool.query("SELECT * FROM teams WHERE id = $1", [teamId]);
+    if (teamRes.rows.length === 0) {
+      return res.status(404).json({ message: "Team not found" });
+    }
+
+    // 2️⃣ Get stats (total members, completed tasks, pending tasks)
+    const statsRes = await pool.query(
       `
       SELECT 
         COUNT(DISTINCT m.user_id) AS total_members,
@@ -280,23 +287,79 @@ router.get("/stats/:id", checkAuthenticated, async (req, res) => {
       FROM teams tm
       LEFT JOIN memberships m ON m.team_id = tm.id
       LEFT JOIN tasks t ON t.team_id = tm.id
-      WHERE tm.owner_id = $1
+      WHERE tm.id = $1
     `,
-      [userId]
+      [teamId]
     );
 
-    const row = stats.rows[0];
+    const stats = statsRes.rows[0];
+
+    // 3️⃣ Get all members (id, name, email, role)
+    const membersRes = await pool.query(
+      `
+      SELECT u.id, u.name, u.email, m.role
+      FROM memberships m
+      JOIN users u ON m.user_id = u.id
+      WHERE m.team_id = $1
+    `,
+      [teamId]
+    );
 
     res.json({
-      totalMembers: parseInt(row.total_members, 10) || 0,
-      completedTasks: parseInt(row.completed_tasks, 10) || 0,
-      pendingTasks: parseInt(row.pending_tasks, 10) || 0,
+      teamId,
+      totalMembers: parseInt(stats.total_members, 10) || 0,
+      completedTasks: parseInt(stats.completed_tasks, 10) || 0,
+      pendingTasks: parseInt(stats.pending_tasks, 10) || 0,
+      members: membersRes.rows.map(row => ({
+        id: row.id,
+        name: row.name,
+        email: row.email,
+        role: row.role
+      }))
     });
   } catch (err) {
-    console.error("Error fetching team stats:", err);
+    console.error("❌ Error fetching team stats:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+
+// ✅ Get total members + member list (name, email, role) of a team
+router.get("/:id/members/count", checkAuthenticated, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Ensure team exists
+    const team = await Team.findById(id);
+    if (!team) {
+      return res.status(404).json({ message: "Team not found" });
+    }
+
+    // Fetch members with name, email, role
+    const result = await pool.query(
+      `SELECT u.id, u.name, u.email, m.role
+       FROM memberships m
+       JOIN users u ON m.user_id = u.id
+       WHERE m.team_id = $1`,
+      [id]
+    );
+
+    res.json({
+      teamId: id,
+      totalMembers: result.rows.length,
+      members: result.rows.map(row => ({
+        id: row.id,
+        name: row.name,
+        email: row.email,
+        role: row.role
+      }))
+    });
+  } catch (err) {
+    console.error("❌ Error in /:id/members/count:", err.message);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 
 module.exports = router;
