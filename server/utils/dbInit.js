@@ -53,7 +53,7 @@ async function initTables() {
   team_id INT NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
   title VARCHAR(255) NOT NULL,
   description TEXT,
-  status VARCHAR(50) DEFAULT 'pending', -- pending, completed
+  status VARCHAR(50) DEFAULT 'pending' CHECK (status IN ('pending', 'completed')),
   priority VARCHAR(50) DEFAULT 'normal', -- low, normal, high
   due_date TIMESTAMP,
   created_at TIMESTAMP DEFAULT NOW(),
