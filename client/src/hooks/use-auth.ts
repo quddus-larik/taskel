@@ -1,26 +1,48 @@
-import { useEffect, useState } from "react"
-import axios from "axios"
+import { useEffect, useState } from "react";
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+}
 
 export function useAuth() {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:4000/api/auth/status", { withCredentials: true })
-      .then(res => {
-        if (res.data.authenticated) {
-          setUser(res.data.user)
-        } else {
-          setUser(null)
-        }
-      })
-      .catch(() => {
-        setUser(null);
-        console.error("error by hook:", user)
-      })
-      .finally(() => setLoading(false))
-  }, [])
+    const fetchAuthStatus = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/auth/status`,
+          {
+            method: "GET",
+            credentials: "include", 
+          }
+        );
 
-  return { user, loading }
+        const data: { authenticated: boolean; user: User | null } =
+          await res.json();
+
+        if (data.authenticated) {
+          setUser(data.user);
+        } else {
+          setUser(null);
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.error("error by hook:", err.message);
+        } else {
+          console.error("unknown error by hook:", err);
+        }
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAuthStatus();
+  }, []);
+
+  return { user, loading };
 }

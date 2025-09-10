@@ -57,7 +57,7 @@ router.post('/register', checkNotAuthenticated, async (req, res) => {
 
 
 // Login
-router.post('/api/login', checkNotAuthenticated, (req, res, next) => {
+router.post('/login', checkNotAuthenticated, (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) return res.status(500).json({ error: 'Internal error' });
     if (!user) return res.status(401).json({ error: info.message || 'Invalid credentials' });

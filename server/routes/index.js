@@ -6,10 +6,16 @@ const taskRoutes = require("./taskRoutes");
 
 const router = express.Router();
 
-router.use(authRoutes);
+router.use("/api",authRoutes);
 router.use("/api",userRoutes);
 router.use("/api/teams", teamRoutes);
 router.use("/api/tasks", taskRoutes);
 router.use("/api/smpt/invite", taskRoutes);
+
+router.get("/api/demo-check",(req,res)=> {
+    res.send('<h1>Hello I am Fine at Server, </h1>')
+
+
+});
 
 module.exports = router;

@@ -1,23 +1,8 @@
-"use client"
-
 import * as React from "react"
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react"
+import { SquareTerminal } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -25,35 +10,18 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  
-  const { user, loading}= useAuth();
-  // This is sample data.
+  const { user } = useAuth()
+
+  // Fallbacks to prevent TS errors when user is null/undefined
   const data = {
     user: {
-      name: user?.name,
-      email: user?.email,
-      avatar: `https://avatar.iran.liara.run/username?username=${user?.name}`,
+      name: user?.name ?? "Guest",
+      email: user?.email ?? "guest@example.com",
+      avatar: `https://avatar.iran.liara.run/username?username=${user?.name ?? "guest"}`,
     },
-    teams: [
-      {
-        name: "Acme Inc",
-        logo: GalleryVerticalEnd,
-        plan: "Enterprise",
-      },
-      {
-        name: "Acme Corp.",
-        logo: AudioWaveform,
-        plan: "Startup",
-      },
-      {
-        name: "Evil Corp.",
-        logo: Command,
-        plan: "Free",
-      },
-    ],
     navMain: [
       {
         title: "Taskel",
@@ -62,22 +30,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         isActive: true,
         items: [
           {
-            title: "Explore Teams",
+            title: "Teams",
             url: "/teams",
           },
           {
-            title: "dashboard",
+            title: "Dashboard",
             url: "/dashboard",
           },
-          
         ],
       },
-    ]
+    ],
   }
+
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+      <SidebarHeader className="p-4">
+        <p>Taskel</p>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

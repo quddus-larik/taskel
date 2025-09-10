@@ -17,7 +17,7 @@ initializePassport(passport);
 
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: process.env.CLIENT_URL || "http://localhost:5173",
   credentials: true
 }));
 
@@ -26,19 +26,17 @@ app.use(express.json());
 app.use(flash());
 app.use(
   session({
-    store: new pgSession({ pool, tableName: 'user_sessions' }),
-    secret: process.env.SESSION_SECRET || 'your-secret',
+    store: new pgSession({ pool, tableName: "user_sessions" }),
+    secret: process.env.SESSION_SECRET ,
     resave: false,
     saveUninitialized: false,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24, // 1 day
-      httpOnly: true,              
-      secure: false,               
-      sameSite: "lax",             // same domain nahi ha F/B ka
+      secure: process.env.NODE_ENV === "production", // true on Render
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     },
   })
 );
-
 
 app.use(passport.initialize());
 app.use(passport.session());

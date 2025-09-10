@@ -12,13 +12,15 @@ import SignUpPage from "./pages/signup.tsx";
 import DashboardProvider from "@/components/providers/dashboard-provider.tsx";
 
 import { ProtectedRoute, GuestRoute } from "@/components/providers/route-guards.tsx";
-import TeamPage from "./pages/teams.tsx";
-import ExploreTeamPage from "./pages/explore-team.tsx";
+// @ts-ignore
+import TeamPage from "@/pages/teams.jsx";
+// @ts-ignore
+import ExploreTeamPage from "@/pages/explore-team.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    // Optional: if you have no loader, just omit it.
+   
   },
   {
     path: "/dashboard",
@@ -37,8 +39,12 @@ const router = createBrowserRouter([
     element: <ProtectedRoute><DashboardProvider><TeamPage /></DashboardProvider></ProtectedRoute>,
   },
   {
-    path: "/explore-team",
+    path: "/teams/explore-team",
     element: <ProtectedRoute><DashboardProvider><ExploreTeamPage /></DashboardProvider></ProtectedRoute>
+  },
+  {
+    path: "/profile",
+    element: <>Hello</>
   }
 
 ]);

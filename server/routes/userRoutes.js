@@ -7,14 +7,20 @@ require('dotenv').config()
 
 
 // Status check route
-router.get("/auth/status", checkNotAuthenticated, (req, res) => {
+router.get("/auth/status", (req, res) => {
+  console.log("Session:", req.session);
+  console.log("User:", req.user);
+  console.log("Authenticated:", req.isAuthenticated());
+
   res.json({
-    authenticated: req.isAuthenticated(),
+    authenticated: req.isAuthenticated() || false,
     user: req.isAuthenticated()
       ? { id: req.user.id, name: req.user.name, email: req.user.email }
       : null,
   });
 });
+
+
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -39,9 +45,8 @@ router.get("/users/email/:email", checkAuthenticated, async (req, res) => {
       try {
         const inviteUrl = `http://localhost:5173/signup?email=${encodeURIComponent(
           email
-        )}${team_id ? `&team_id=${team_id}` : ""}${
-          owner_id ? `&owner_id=${owner_id}` : ""
-        }`;
+        )}${team_id ? `&team_id=${team_id}` : ""}${owner_id ? `&owner_id=${owner_id}` : ""
+          }`;
 
         await transporter.sendMail({
           from: `"Taskel App" <${process.env.SMTP_USER}>`,

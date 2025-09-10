@@ -42,7 +42,7 @@ export default function DashboardProvider({ children }: DashboardProviderProps) 
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/">Home</Link>
+                    <Link to="/">taskel</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
 
